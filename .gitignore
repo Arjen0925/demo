@@ -23,7 +23,7 @@
 /zipkin-server/zipkin.jar
 /zipkin-server/zipkin.jar.*
 /log/
-
+.idea
 .settings
 .springBeans
 .project
