@@ -44,7 +44,8 @@ public class BrowserSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailService) // 处理自动登录逻辑
                 .and()
                 .authorizeRequests() // 授权配置
-                .antMatchers("/login.html","/css/**","/authentication/require","/code/image").permitAll()
+                .antMatchers("/login_upc.html","/login_sms.html","/css/**",
+                        "/authentication/require","/code/image","/code/sms").permitAll()
                 .anyRequest()  // 所有请求
                 .authenticated().
                 and().csrf().disable();; // 都需要认证

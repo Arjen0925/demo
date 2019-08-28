@@ -30,8 +30,11 @@ public class BrowserSecurityController {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
-            if (StringUtils.endsWithIgnoreCase(targetUrl, ".html"))
-                redirectStrategy.sendRedirect(request, response, "/login.html");
+            if (StringUtils.endsWithIgnoreCase(targetUrl, "upc.html")) {
+                redirectStrategy.sendRedirect(request, response, "/login_upc.html");
+            }else  if (StringUtils.endsWithIgnoreCase(targetUrl, "sms.html")) {
+                redirectStrategy.sendRedirect(request, response, "/login_sms.html");
+            }
         }
         return "访问的资源需要身份认证！";
     }
