@@ -34,6 +34,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
 //        httpServletResponse.getWriter().write(mapper.writeValueAsString(authentication));
 
         SavedRequest savedRequest = requestCache.getRequest(httpServletRequest, httpServletResponse);
-        redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, savedRequest.getRedirectUrl());
+        redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse,/* savedRequest.getRedirectUrl()*/"/index");
     }
 }

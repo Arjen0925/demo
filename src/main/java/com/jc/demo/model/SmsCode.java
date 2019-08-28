@@ -25,7 +25,7 @@ public class SmsCode {
         this.expireTime = expireTime;
     }
 
-    boolean isExpire() {
+    public boolean isExpire() {
         return LocalDateTime.now().isAfter(expireTime);
     }
 }
