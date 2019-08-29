@@ -42,7 +42,7 @@ public class SmsAuthenticationFilter  extends AbstractAuthenticationProcessingFi
         SmsAuthenticationToken authRequest = new SmsAuthenticationToken(mobile);
 
         setDetails(httpServletRequest, authRequest);
-        return null;
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     protected String obtainMobile(HttpServletRequest request) {
