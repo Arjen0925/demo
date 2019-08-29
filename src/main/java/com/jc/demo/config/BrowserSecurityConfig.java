@@ -3,6 +3,7 @@ package com.jc.demo.config;
 import com.jc.demo.config.filter.ValidateCodeFilter;
 import com.jc.demo.config.handler.MyAuthenticationFailureHandler;
 import com.jc.demo.config.handler.MyAuthenticationSuccessHandler;
+import com.jc.demo.config.session.MySessionExpiredStrategy;
 import com.jc.demo.service.impl.UserDetailService;
 import com.jc.demo.smscode.SmsAuthenticationConfig;
 import com.jc.demo.smscode.SmsCodeFilter;
@@ -35,6 +36,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SmsAuthenticationConfig smsAuthenticationConfig;
 
+    @Autowired
+    private MySessionExpiredStrategy sessionExpiredStrategy;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)// 添加验证码校验过滤器
@@ -53,9 +57,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 授权配置
                 .antMatchers("/login_upc.html", "/login_sms.html", "/css/**",
-                        "/authentication/require", "/code/image", "/code/sms").permitAll()
+                        "/authentication/require", "/code/image", "/code/sms","/session/invalid").permitAll()
                 .anyRequest()  // 所有请求
                 .authenticated()
+                .and()
+                .sessionManagement() // 添加 Session管理器
+                .invalidSessionUrl("/session/invalid") // Session失效后跳转到这个链接
+                .maximumSessions(1)
+                .expiredSessionStrategy(sessionExpiredStrategy).and()
                 .and().csrf().disable()
                 .apply(smsAuthenticationConfig);
         ;
