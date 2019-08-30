@@ -1,6 +1,7 @@
 package com.jc.demo.config;
 
 import com.jc.demo.config.filter.ValidateCodeFilter;
+import com.jc.demo.config.handler.MyAuthenticationAccessDeniedHandler;
 import com.jc.demo.config.handler.MyAuthenticationFailureHandler;
 import com.jc.demo.config.handler.MyAuthenticationSuccessHandler;
 import com.jc.demo.config.session.MySessionExpiredStrategy;
@@ -10,6 +11,7 @@ import com.jc.demo.smscode.SmsCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +28,7 @@ import javax.sql.DataSource;
  * 8/22/19 3:12 PM
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ValidateCodeFilter validateCodeFilter;
@@ -39,9 +42,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MySessionExpiredStrategy sessionExpiredStrategy;
 
+    @Autowired private MyAuthenticationAccessDeniedHandler authenticationAccessDeniedHandler;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)// 添加验证码校验过滤器
+        http.exceptionHandling().accessDeniedHandler(authenticationAccessDeniedHandler)
+                .and()
+                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)// 添加验证码校验过滤器
                 .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class) // 添加短信验证码校验过滤器
                 .formLogin() // 表单登录
                 // http.httpBasic() // HTTP Basic
